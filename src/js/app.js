@@ -3,19 +3,33 @@ var handleContent = function(){
 	var ajaxLoader = '<img class="ajax-loader" src="/img/loader.gif" />';
 	$('.btn').click(function(e){
 		e.preventDefault();
-		
+		var btn = $(this);
 		$.ajax({
 			url: "data/users.json",
 			type: "GET",
 			data: {"id": 1},
 			beforeSend: function(){
+				//btn.unbind('click');
+				btn.prop('disabled', 'disabled');
 				preloader.empty();
 				preloader.append(ajaxLoader);				
 			},
 			success: function (result, status, xhr){
 				/*ponekad je potrebno parsirati JSON koji dobijete rezultatu u js objektu*/
 				//var users= $.parseJSON(result);
-				console.log(users);
+				$.each(result, function(key, value){
+					var html = '';
+					html += '<tr>';
+					html += '<td>'  + value.id + '</td>';
+					html += '<td>'  + value.name + '</td>';
+					html += '<td>'  + value.username + '</td>';
+					html += '<td>'  + value.email + '</td>';
+					html += '</tr>'
+					
+					$('.users tbody').append(html);
+					
+				});
+
 			},
 			error: function (xhr, status, error){
 			if(error){
